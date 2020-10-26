@@ -11,7 +11,7 @@ class Environment {
   get connectionString(): string {
     return (
       // process.env.connectionString ||
-      "mongodb+srv://username:Qwerty!123@cluster0.sq8uv.mongodb.net/training?retryWrites=true&w=majority"
+      "mongodb+srv://admin:Qwerty!123@cluster0.sq8uv.mongodb.net/training?retryWrites=true&w=majority"
     );
   }
   get databaseName(): string {
