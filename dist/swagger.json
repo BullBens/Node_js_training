@@ -9,8 +9,7 @@
             "url": ""
         }
     },
-    "host": "localhost:80",
-    "basePath": "/",
+    "host": "https://node-js-training-api.herokuapp.com",
     "tags": [
         {
             "name": "Users",
@@ -18,7 +17,7 @@
         }
     ],
     "schemes": [
-        "http"
+        "https"
     ],
     "consumes": [
         "application/json"
@@ -27,10 +26,10 @@
         "application/json"
     ],
     "paths": {
-        "/users": {
+        "/auth/register": {
             "post": {
                 "tags": [
-                    "Users"
+                    "Auth"
                 ],
                 "description": "Create new user in system",
                 "parameters": [
@@ -39,7 +38,7 @@
                         "in": "body",
                         "description": "User that we want to create",
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "$ref": "#/definitions/AuthRegisterModel"
                         }
                     }
                 ],
@@ -50,84 +49,59 @@
                     "200": {
                         "description": "New user is created",
                         "schema": {
-                            "$ref": "#/definitions/User"
-                        }
-                    }
-                }
-            },
-            "get": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Get all users in system",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/Users"
+                            "$ref": "#/definitions/AuthRegisterResponseModel"
                         }
                     }
                 }
             }
         },
-        "/users/{userId}": {
-            "parameters": [
-                {
-                    "name": "userId",
-                    "in": "path",
-                    "required": true,
-                    "description": "ID of user that we want to find",
-                    "type": "string"
-                }
-            ],
-            "get": {
+        "/auth/login": {
+            "post": {
                 "tags": [
-                    "Users"
+                    "Auth"
                 ],
-                "summary": "Get user with given ID",
-                "responses": {
-                    "200": {
-                        "description": "User is found",
-                        "schema": {
-                            "$ref": "#/definitions/User"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "summary": "Delete user with given ID",
-                "tags": [
-                    "Users"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User is deleted",
-                        "schema": {
-                            "$ref": "#/definitions/User"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "summary": "Update user with give ID",
-                "tags": [
-                    "Users"
-                ],
+                "description": "Authorization user in system",
                 "parameters": [
                     {
                         "name": "user",
                         "in": "body",
-                        "description": "User with new values of properties",
+                        "description": "The user we want to authorize",
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "$ref": "#/definitions/AuthLoginModel"
                         }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User is authorized",
+                        "schema": {
+                            "$ref": "#/definitions/AuthLoginResponseModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get user by token",
+                "parameters": [
+                    {
+                        "name": "x-access-token",
+                        "in": "header",
+                        "description": "Auth access token"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "User is updated",
+                        "description": "User is found",
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "$ref": "#/definitions/UserModel"
                         }
                     }
                 }
@@ -135,13 +109,17 @@
         }
     },
     "definitions": {
-        "User": {
+        "AuthRegisterModel": {
             "required": [
+                "login",
                 "email",
-                "_id"
+                "password",
+                "type",
+                "city",
+                "classification"
             ],
             "properties": {
-                "_id": {
+                "login": {
                     "type": "string",
                     "uniqueItems": true
                 },
@@ -149,17 +127,86 @@
                     "type": "string",
                     "uniqueItems": true
                 },
-                "lastName": {
+                "password": {
                     "type": "string"
                 },
-                "firstName": {
+                "type": {
+                    "type": "number"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "classification": {
+                    "type": "number"
+                }
+            }
+        },
+        "AuthLoginModel": {
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "password": {
                     "type": "string"
                 }
             }
         },
-        "Users": {
-            "type": "array",
-            "$ref": "#/definitions/User"
+        "AuthRegisterResponseModel": {
+            "properties": {
+                "data": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "AuthLoginResponseModel": {
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "object",
+                    "$ref": "#/definitions/UserModel"
+                }
+            }
+        },
+        "UserModel": {
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "photo": {
+                    "type": "string"
+                },
+                "login": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "number"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "coins": {
+                    "type": "number"
+                },
+                "classification": {
+                    "type": "number"
+                },
+                "isAdmin": {
+                    "type": "boolean"
+                },
+                "confirmed": {
+                    "type": "boolean"
+                }
+            }
         }
     }
 }
