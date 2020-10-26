@@ -39,54 +39,59 @@ let AuthService = class AuthService {
     register(registerModel) {
         return __awaiter(this, void 0, void 0, function* () {
             const hashedPassword = this._hashEncrypter.getHash(registerModel.password);
-            const existedUser = yield this._userRepository.findOne(registerModel.email, hashedPassword);
-            if (existedUser && existedUser.confirmed) {
-                throw new common_1.ApplicationError("User already exist!");
+            try {
+                const existedUser = yield this._userRepository.findOne(registerModel.email, hashedPassword);
+                if (existedUser && existedUser.confirmed) {
+                    throw new common_1.ApplicationError("User already exist!");
+                }
+                // if (existedUser && !existedUser.confirmed) {
+                //   return await this._sendEmailService
+                //     .emailConfirm(
+                //       existedUser._id,
+                //       existedUser.email,
+                //       "andreiafanaskin@gmail.com"
+                //     )
+                //     .then(() => {
+                //       return true;
+                //     })
+                //     .catch(() => {
+                //       return false;
+                //     });
+                // }
+                const userEntity = yield this._userRepository.add({
+                    login: registerModel.login,
+                    email: registerModel.email,
+                    password: hashedPassword,
+                    type: registerModel.type,
+                    photo: null,
+                    city: registerModel.city,
+                    classification: registerModel.classification,
+                    coins: 0,
+                    isAdmin: false,
+                    confirmed: true,
+                });
+                debugger;
+                if (userEntity) {
+                    return true;
+                    // return await this._sendEmailService
+                    //   .emailConfirm(
+                    //     userEntity._id,
+                    //     userEntity.email,
+                    //     "andreiafanaskin@gmail.com"
+                    //   )
+                    //   .then(() => {
+                    //     return true;
+                    //   })
+                    //   .catch(() => {
+                    //     return false;
+                    //   });
+                }
+                else {
+                    throw new common_1.ApplicationError("Error create user!");
+                }
             }
-            // if (existedUser && !existedUser.confirmed) {
-            //   return await this._sendEmailService
-            //     .emailConfirm(
-            //       existedUser._id,
-            //       existedUser.email,
-            //       "andreiafanaskin@gmail.com"
-            //     )
-            //     .then(() => {
-            //       return true;
-            //     })
-            //     .catch(() => {
-            //       return false;
-            //     });
-            // }
-            const userEntity = yield this._userRepository.add({
-                login: registerModel.login,
-                email: registerModel.email,
-                password: hashedPassword,
-                type: registerModel.type,
-                photo: null,
-                city: registerModel.city,
-                classification: registerModel.classification,
-                coins: 0,
-                isAdmin: false,
-                confirmed: true,
-            });
-            debugger;
-            if (userEntity) {
-                return true;
-                // return await this._sendEmailService
-                //   .emailConfirm(
-                //     userEntity._id,
-                //     userEntity.email,
-                //     "andreiafanaskin@gmail.com"
-                //   )
-                //   .then(() => {
-                //     return true;
-                //   })
-                //   .catch(() => {
-                //     return false;
-                //   });
-            }
-            else {
-                throw new common_1.ApplicationError("Error create user!");
+            catch (error) {
+                throw new common_1.ApplicationError(error);
             }
         });
     }
