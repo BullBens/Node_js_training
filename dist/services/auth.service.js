@@ -63,7 +63,7 @@ let AuthService = class AuthService {
                 classification: registerModel.classification,
                 coins: 0,
                 isAdmin: false,
-                confirmed: false,
+                confirmed: true,
             });
             debugger;
             if (userEntity) {

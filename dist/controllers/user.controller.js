@@ -66,7 +66,6 @@ let UserController = class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 let user = yield this._userService.getUserById(request.user.id);
-                debugger;
                 return response.send(user);
             }
             catch (error) {

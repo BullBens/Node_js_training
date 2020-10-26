@@ -13,12 +13,12 @@ class Environment {
     get connectionString() {
         return (
         // process.env.connectionString ||
-        "mongodb+srv://bullbens:Inner_world_Lq3Pck2irDam@renkocluster.lbd9i.mongodb.net/renkodb?retryWrites=true&w=majority");
+        "mongodb+srv://username:Qwerty!123@cluster0.sq8uv.mongodb.net/<dbname>?retryWrites=true&w=majority");
     }
     get databaseName() {
         return (
         // process.env.databaseName ||
-        "renkodb");
+        "training");
     }
     get sendGridApiKey() {
         return (
@@ -26,7 +26,7 @@ class Environment {
         "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");
     }
     get emailConfirmUrl() {
-        return "https://renko-api.herokuapp.com/auth/email-confirm?emailToken=";
+        return "https://node-js-training-api.herokuapp.com/auth/email-confirm?emailToken=";
     }
 }
 exports.Environments = new Environment();
