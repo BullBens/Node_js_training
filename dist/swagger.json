@@ -9,7 +9,7 @@
             "url": ""
         }
     },
-    "host": "https://node-js-training-api.herokuapp.com",
+    "host": "node-js-training-api.herokuapp.com",
     "tags": [
         {
             "name": "Users",
