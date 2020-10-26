@@ -1,0 +1,24 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const inversify_1 = require("inversify");
+const services_1 = require("./services");
+const auth_service_1 = require("./services/auth.service");
+const repositories_1 = require("./repositories");
+const controllers_1 = require("./controllers");
+const common_1 = require("./common");
+exports.diContainer = new inversify_1.Container();
+exports.diContainer.bind(common_1.JwtHelper).toSelf();
+exports.diContainer.bind(common_1.HashEncrypter).toSelf();
+exports.diContainer.bind(repositories_1.UserRepository).toSelf();
+exports.diContainer.bind(repositories_1.FeatureRepository).toSelf();
+exports.diContainer.bind(repositories_1.EventRepository).toSelf();
+exports.diContainer.bind(services_1.FeatureService).toSelf();
+exports.diContainer.bind(auth_service_1.AuthService).toSelf();
+exports.diContainer.bind(services_1.UserService).toSelf();
+exports.diContainer.bind(services_1.EventService).toSelf();
+exports.diContainer.bind(services_1.SendEmailService).toSelf();
+exports.diContainer.bind("Controller").to(controllers_1.FeatureController);
+exports.diContainer.bind("Controller").to(controllers_1.AuthController);
+exports.diContainer.bind("Controller").to(controllers_1.UserController);
+exports.diContainer.bind("Controller").to(controllers_1.EventController);
+//# sourceMappingURL=di-container.js.map
