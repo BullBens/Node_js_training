@@ -28,20 +28,20 @@ export class AuthService {
     if (existedUser && existedUser.confirmed) {
       throw new ApplicationError("User already exist!");
     }
-    if (existedUser && !existedUser.confirmed) {
-      return await this._sendEmailService
-        .emailConfirm(
-          existedUser._id,
-          existedUser.email,
-          "andreiafanaskin@gmail.com"
-        )
-        .then(() => {
-          return true;
-        })
-        .catch(() => {
-          return false;
-        });
-    }
+    // if (existedUser && !existedUser.confirmed) {
+    //   return await this._sendEmailService
+    //     .emailConfirm(
+    //       existedUser._id,
+    //       existedUser.email,
+    //       "andreiafanaskin@gmail.com"
+    //     )
+    //     .then(() => {
+    //       return true;
+    //     })
+    //     .catch(() => {
+    //       return false;
+    //     });
+    // }
     const userEntity = await this._userRepository.add({
       login: registerModel.login,
       email: registerModel.email,
@@ -56,18 +56,19 @@ export class AuthService {
     });
      debugger
     if (userEntity) {
-      return await this._sendEmailService
-        .emailConfirm(
-          userEntity._id,
-          userEntity.email,
-          "andreiafanaskin@gmail.com"
-        )
-        .then(() => {
-          return true;
-        })
-        .catch(() => {
-          return false;
-        });
+      return true
+      // return await this._sendEmailService
+      //   .emailConfirm(
+      //     userEntity._id,
+      //     userEntity.email,
+      //     "andreiafanaskin@gmail.com"
+      //   )
+      //   .then(() => {
+      //     return true;
+      //   })
+      //   .catch(() => {
+      //     return false;
+      //   });
     } else {
       throw new ApplicationError("Error create user!");
     }
