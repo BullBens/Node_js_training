@@ -16,11 +16,9 @@ const multer = require("multer");
 
 const Storage = multer.diskStorage({
   destination(req, files, callback) {
-
     callback(null, "../../public/uploads");
   },
   filename(req, files, callback) {
-debugger
     callback(null, `${files.fieldname}_${Date.now()}_${files.originalname}`);
   },
 });
@@ -65,10 +63,7 @@ export class EventController implements Controller {
     );
     return response.send(eventContext);
   }
-  async test(request: any, response: ResponseBase<any>) {
-
-
-  }
+  async test(request: any, response: ResponseBase<any>) {}
 
   routes(): RouteHandler[] {
     const handlers: RouteHandler[] = [];

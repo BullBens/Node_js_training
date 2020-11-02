@@ -15,6 +15,14 @@ export const UserSchema = new Schema(
       type: String,
       required: true,
     },
+    invitationHashCode: {
+      type: String,
+      required: true,
+    },
+    friends: {
+      type: Array,
+      required: true,
+    },
     login: {
       type: String,
       required: true,

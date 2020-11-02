@@ -27,6 +27,7 @@ const common_1 = require("../common");
 const hash_encrypter_1 = require("./../common/hash-encrypter");
 const environment_1 = require("../environment/environment");
 const sendEmail_service_1 = require("./sendEmail.service");
+const nanoid_1 = require("nanoid");
 var jwt = require("jsonwebtoken");
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(environment_1.Environments.sendGridApiKey);
@@ -39,59 +40,46 @@ let AuthService = class AuthService {
     register(registerModel) {
         return __awaiter(this, void 0, void 0, function* () {
             const hashedPassword = this._hashEncrypter.getHash(registerModel.password);
-            try {
-                const existedUser = yield this._userRepository.findOne(registerModel.email, hashedPassword);
-                if (existedUser && existedUser.confirmed) {
-                    throw new common_1.ApplicationError("User already exist!");
-                }
-                // if (existedUser && !existedUser.confirmed) {
-                //   return await this._sendEmailService
-                //     .emailConfirm(
-                //       existedUser._id,
-                //       existedUser.email,
-                //       "andreiafanaskin@gmail.com"
-                //     )
-                //     .then(() => {
-                //       return true;
-                //     })
-                //     .catch(() => {
-                //       return false;
-                //     });
-                // }
-                const userEntity = yield this._userRepository.add({
-                    login: registerModel.login,
-                    email: registerModel.email,
-                    password: hashedPassword,
-                    type: registerModel.type,
-                    photo: null,
-                    city: registerModel.city,
-                    classification: registerModel.classification,
-                    coins: 0,
-                    isAdmin: false,
-                    confirmed: true,
-                });
-                debugger;
-                if (userEntity) {
-                    return true;
-                    // return await this._sendEmailService
-                    //   .emailConfirm(
-                    //     userEntity._id,
-                    //     userEntity.email,
-                    //     "andreiafanaskin@gmail.com"
-                    //   )
-                    //   .then(() => {
-                    //     return true;
-                    //   })
-                    //   .catch(() => {
-                    //     return false;
-                    //   });
-                }
-                else {
-                    throw new common_1.ApplicationError("Error create user!");
-                }
+            const existedUser = yield this._userRepository.findOne(registerModel.email, hashedPassword);
+            if (existedUser && existedUser.confirmed) {
+                throw new common_1.ApplicationError("User already exist!");
             }
-            catch (error) {
-                throw new common_1.ApplicationError(error);
+            if (existedUser && !existedUser.confirmed) {
+                return yield this._sendEmailService
+                    .emailConfirm(existedUser._id, existedUser.email, "andreiafanaskin@gmail.com")
+                    .then(() => {
+                    return true;
+                })
+                    .catch(() => {
+                    return false;
+                });
+            }
+            const userEntity = yield this._userRepository.add({
+                friends: [],
+                login: registerModel.login,
+                email: registerModel.email,
+                password: hashedPassword,
+                type: registerModel.type,
+                photo: null,
+                city: registerModel.city,
+                classification: registerModel.classification,
+                coins: 0,
+                isAdmin: false,
+                confirmed: false,
+                invitationHashCode: nanoid_1.nanoid(),
+            });
+            if (userEntity) {
+                return yield this._sendEmailService
+                    .emailConfirm(userEntity._id, userEntity.email, "andreiafanaskin@gmail.com")
+                    .then(() => {
+                    return true;
+                })
+                    .catch(() => {
+                    return false;
+                });
+            }
+            else {
+                throw new common_1.ApplicationError("Error create user!");
             }
         });
     }

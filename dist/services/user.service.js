@@ -31,10 +31,10 @@ let UserService = class UserService {
     constructor(_userRepository) {
         this._userRepository = _userRepository;
     }
-    getAll() {
+    getFriends(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const users = yield this._userRepository.getAll();
-            return users;
+            const friends = yield this._userRepository.getFriends(id);
+            return friends;
         });
     }
     getUserById(id) {
@@ -43,10 +43,25 @@ let UserService = class UserService {
             return user;
         });
     }
-    // async getUser() {
-    //   const profile = await this._userRepository.;
-    //   return {};
-    // }
+    addToFriendsList(invitationHashCode, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(invitationHashCode);
+            const searchedProfile = yield this._userRepository.findByInvitationHashCodeAndUpdateFriends(invitationHashCode, id);
+            if (searchedProfile) {
+                const user = yield this._userRepository.findByIdAndUpdateFriends(id, searchedProfile.id);
+                if (user) {
+                    let login = searchedProfile.get("login");
+                    return { login };
+                }
+                else {
+                    // ToDo
+                }
+            }
+            else {
+                throw new common_1.ApplicationError(`"Profile not found`);
+            }
+        });
+    }
     updateUser(_id, data) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this._userRepository.findByIdAndUpdate(_id, data);

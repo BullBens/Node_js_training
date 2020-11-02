@@ -3,7 +3,6 @@ import {
   AuthResponseModel,
   AuthLoginModel,
   AuthRegisterModel,
-  AuthContextModel,
 } from "models";
 import { injectable, inject } from "inversify";
 import {
@@ -14,7 +13,6 @@ import {
   RequestGet,
   RouteHandler,
 } from "../common";
-import { AuthMiddleware } from "../middlewares/auth.middleware";
 import * as fs from "fs";
 
 @injectable()
@@ -48,7 +46,6 @@ export class AuthController implements Controller {
     return response.send(authContext);
   }
 
-
   async resetPassword(request: RequestPost<any>, response: ResponseBase<any>) {
     const res = this._authService.requestResetPassword(request.body.email);
     return response.send(res);
@@ -58,7 +55,6 @@ export class AuthController implements Controller {
     request: RequestGet<{ emailToken: string }>,
     response: any
   ) {
-    debugger
     try {
       await this._authService.emailConfirm(request.query.emailToken);
       fs.readFile("./public/email-success-confirm.html", function (err, html) {
@@ -96,7 +92,7 @@ export class AuthController implements Controller {
       type: "GET",
     });
     handlers.push({
-      route: `/${prefix}/register`,
+      route: `/${prefix}/registration`,
       handlers: [<any>this.register],
       type: "POST",
     });

@@ -47,22 +47,33 @@ export class UserController implements Controller {
 
   constructor() {
     this.profile = this.profile.bind(this);
-    this.getAll = this.getAll.bind(this);
-  }
-  async getAll(request: RequestPost<any>, response: ResponseBase<any>) {
-    let fileContext = await this._userService.getAll();
-    return response.send(fileContext);
+    this.addToFriendsList = this.addToFriendsList.bind(this);
+    this.getFriends = this.getFriends.bind(this);
   }
 
-  async getUser(request: RequestGet<any>, response: ResponseBase<any>) {
-    let profile = await this._userService.getAll();
-    return response.send(profile);
+  async getFriends(request: RequestGet<any>, response: ResponseBase<any>) {
+    let friends = await this._userService.getFriends(request.user.id);
+    return response.send(friends);
   }
 
   async profile(request: RequestGet<any>, response: ResponseBase<any>) {
     try {
       let user = await this._userService.getUserById(request.user.id);
       return response.send(user);
+    } catch (error) {
+      throw new ApplicationError(`"Error get user`);
+    }
+  }
+  async addToFriendsList(
+    request: RequestPost<any>,
+    response: ResponseBase<AuthContextModel>
+  ) {
+    try {
+      let data = await this._userService.addToFriendsList(
+        request.body.invitationHashCode,
+        request.user.id
+      );
+      return response.send(data);
     } catch (error) {
       throw new ApplicationError(`"Error get user`);
     }
@@ -93,11 +104,6 @@ export class UserController implements Controller {
       type: "GET",
     });
     handlers.push({
-      route: `/${prefix}/`,
-      handlers: [AuthMiddleware, <any>this.getUser],
-      type: "GET",
-    });
-    handlers.push({
       route: `/${prefix}/upload-profile-image`,
       handlers: [
         AuthMiddleware,
@@ -107,8 +113,13 @@ export class UserController implements Controller {
       type: "POST",
     });
     handlers.push({
-      route: `/${prefix}/get-all`,
-      handlers: [AuthMiddleware, <any>this.getAll],
+      route: `/${prefix}/add-to-friends-list`,
+      handlers: [AuthMiddleware, <any>this.addToFriendsList],
+      type: "POST",
+    });
+    handlers.push({
+      route: `/${prefix}/get-friends`,
+      handlers: [AuthMiddleware, <any>this.getFriends],
       type: "GET",
     });
     return handlers;

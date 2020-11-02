@@ -7,7 +7,7 @@ class Routes {
         const controllers = di_container_1.diContainer.getAll("Controller");
         app.route("/").get((req, res) => {
             res.status(200).send({
-                message: "GET request successfulll"
+                message: "GET request successfulll!!!!"
             });
         });
         for (const controller of controllers) {

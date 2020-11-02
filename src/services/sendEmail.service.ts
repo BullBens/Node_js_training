@@ -7,7 +7,6 @@ const sgMail = require("@sendgrid/mail");
 @injectable()
 export class SendEmailService {
   async emailConfirm(_id: string, to: string, from: string) {
-    debugger
     const emailToken = jwt.sign(
       {
         _id,
@@ -15,7 +14,6 @@ export class SendEmailService {
 
       Environments.secret
     );
-    debugger
     const url = `${Environments.emailConfirmUrl}${emailToken}`;
     var email = {
       to,
@@ -23,10 +21,7 @@ export class SendEmailService {
       subject: "Email confirm",
       text: url,
     };
-    debugger
     return sgMail.send(email);
   }
-  async resetPassword(_id: string, to: string, from: string) {
-      
-  }
+  async resetPassword(_id: string, to: string, from: string) {}
 }

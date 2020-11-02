@@ -49,7 +49,6 @@ let AuthController = class AuthController {
     }
     emailConfirm(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            debugger;
             try {
                 yield this._authService.emailConfirm(request.query.emailToken);
                 fs.readFile("./public/email-success-confirm.html", function (err, html) {
@@ -87,7 +86,7 @@ let AuthController = class AuthController {
             type: "GET",
         });
         handlers.push({
-            route: `/${prefix}/register`,
+            route: `/${prefix}/registration`,
             handlers: [this.register],
             type: "POST",
         });

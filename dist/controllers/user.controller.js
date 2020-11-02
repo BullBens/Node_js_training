@@ -48,18 +48,13 @@ const upload = multer({ storage: storage, fileFilter: fileFilter }).single("imag
 let UserController = class UserController {
     constructor() {
         this.profile = this.profile.bind(this);
-        this.getAll = this.getAll.bind(this);
+        this.addToFriendsList = this.addToFriendsList.bind(this);
+        this.getFriends = this.getFriends.bind(this);
     }
-    getAll(request, response) {
+    getFriends(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            let fileContext = yield this._userService.getAll();
-            return response.send(fileContext);
-        });
-    }
-    getUser(request, response) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let profile = yield this._userService.getAll();
-            return response.send(profile);
+            let friends = yield this._userService.getFriends(request.user.id);
+            return response.send(friends);
         });
     }
     profile(request, response) {
@@ -67,6 +62,17 @@ let UserController = class UserController {
             try {
                 let user = yield this._userService.getUserById(request.user.id);
                 return response.send(user);
+            }
+            catch (error) {
+                throw new common_1.ApplicationError(`"Error get user`);
+            }
+        });
+    }
+    addToFriendsList(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let data = yield this._userService.addToFriendsList(request.body.invitationHashCode, request.user.id);
+                return response.send(data);
             }
             catch (error) {
                 throw new common_1.ApplicationError(`"Error get user`);
@@ -99,11 +105,6 @@ let UserController = class UserController {
             type: "GET",
         });
         handlers.push({
-            route: `/${prefix}/`,
-            handlers: [auth_middleware_1.AuthMiddleware, this.getUser],
-            type: "GET",
-        });
-        handlers.push({
             route: `/${prefix}/upload-profile-image`,
             handlers: [
                 auth_middleware_1.AuthMiddleware,
@@ -113,8 +114,13 @@ let UserController = class UserController {
             type: "POST",
         });
         handlers.push({
-            route: `/${prefix}/get-all`,
-            handlers: [auth_middleware_1.AuthMiddleware, this.getAll],
+            route: `/${prefix}/add-to-friends-list`,
+            handlers: [auth_middleware_1.AuthMiddleware, this.addToFriendsList],
+            type: "POST",
+        });
+        handlers.push({
+            route: `/${prefix}/get-friends`,
+            handlers: [auth_middleware_1.AuthMiddleware, this.getFriends],
             type: "GET",
         });
         return handlers;

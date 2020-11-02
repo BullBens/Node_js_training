@@ -8,5 +8,6 @@ export interface AuthUserModel {
   coins: number;
   classification: number;
   isAdmin: boolean;
-  confirmed:boolean
+  confirmed:boolean;
+  invitationHashCode: string;
 }

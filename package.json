@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-starter-pack-v1",
+  "name": "nodejs",
   "version": "1.0.0",
   "description": "An API built with NodeJS, Express, Sequelize and TypeScript",
   "main": "dist/server.js",
@@ -34,6 +34,7 @@
     "mongoose": "^5.7.3",
     "multer": "^1.4.2",
     "mysql2": "^1.7.0",
+    "nanoid": "^3.1.16",
     "nodemon": "^1.19.3",
     "path": "^0.12.7",
     "reflect-metadata": "^0.1.13",

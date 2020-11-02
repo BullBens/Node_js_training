@@ -15,6 +15,7 @@ export class JwtHelper {
       city: user.city,
       coins: user.coins,
       classification: user.classification,
+      invitationHashCode: user.invitationHashCode,
       isAdmin: user.isAdmin,
       confirmed: user.confirmed
     };

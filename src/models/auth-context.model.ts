@@ -9,4 +9,5 @@ export interface AuthContextModel {
   classification: number;
   isAdmin: boolean;
   confirmed: boolean;
+  invitationHashCode: string;
 }

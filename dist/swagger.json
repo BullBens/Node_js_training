@@ -26,7 +26,7 @@
         "application/json"
     ],
     "paths": {
-        "/auth/register": {
+        "/auth/registration": {
             "post": {
                 "tags": [
                     "Auth"
@@ -47,10 +47,36 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "New user is created",
+                        "description": "Check email and confirm account by url",
                         "schema": {
                             "$ref": "#/definitions/AuthRegisterResponseModel"
                         }
+                    }
+                }
+            }
+        },
+        "/auth/email-confirm": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "description": "Confirm account",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "description": "Token confirm account",
+                        "schema": {
+                            "$ref": "#/definitions/AuthRegisterModel"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Open web site window"
                     }
                 }
             }
@@ -102,6 +128,168 @@
                         "description": "User is found",
                         "schema": {
                             "$ref": "#/definitions/UserModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/get-friends": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get friends",
+                "parameters": [
+                    {
+                        "name": "x-access-token",
+                        "in": "header",
+                        "description": "Auth access token"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Users array",
+                        "schema": {
+                            "properties": {
+                                "type": "array"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/upload-profile-image": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Upload user photo",
+                "parameters": [
+                    {
+                        "name": "x-access-token",
+                        "in": "header",
+                        "description": "Auth access token"
+                    },
+                    {
+                        "name": "image",
+                        "type": "file",
+                        "in": "formData",
+                        "description": "PNG or JPEG file to upload"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Photo is uploaded",
+                        "schema": {
+                            "$ref": "#/definitions/UserModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/add-to-friends-list": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Add user to friends",
+                "parameters": [
+                    {
+                        "name": "x-access-token",
+                        "in": "header",
+                        "description": "Auth access token"
+                    },
+                    {
+                        "name": "invitationHashCode",
+                        "in": "body",
+                        "description": "Invitation Hash Code unique for each user",
+                        "schema": {
+                            "properties": {
+                                "invitationHashCode": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User added as a friend",
+                        "schema": {
+                            "properties": {
+                                "login": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/post": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get posts",
+                "parameters": [
+                    {
+                        "name": "x-access-token",
+                        "in": "header",
+                        "description": "Auth access token"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All posts",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseCreatePostModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/post/create": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Create new post",
+                "parameters": [
+                    {
+                        "name": "x-access-token",
+                        "in": "header",
+                        "description": "Auth access token"
+                    },
+                    {
+                        "name": "Body",
+                        "in": "body",
+                        "description": "",
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "location": {
+                                    "type": "object",
+                                    "properties": {
+                                        "latitude": {
+                                            "type": "number"
+                                        },
+                                        "longitude": {
+                                            "type": "number"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Post added",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseCreatePostModel"
                         }
                     }
                 }
@@ -205,6 +393,30 @@
                 },
                 "confirmed": {
                     "type": "boolean"
+                }
+            }
+        },
+        "ResponseCreatePostModel": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "object",
+                    "properties": {
+                        "latitude": {
+                            "type": "number"
+                        },
+                        "longitude": {
+                            "type": "number"
+                        }
+                    }
+                },
+                "author": {
+                    "type": "string"
                 }
             }
         }

@@ -29,7 +29,6 @@ const Storage = multer.diskStorage({
         callback(null, "../../public/uploads");
     },
     filename(req, files, callback) {
-        debugger;
         callback(null, `${files.fieldname}_${Date.now()}_${files.originalname}`);
     },
 });
@@ -71,8 +70,7 @@ let EventController = class EventController {
         });
     }
     test(request, response) {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
+        return __awaiter(this, void 0, void 0, function* () { });
     }
     routes() {
         const handlers = [];

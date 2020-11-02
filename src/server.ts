@@ -26,7 +26,7 @@ const port = process.env.PORT || httpPort;
   };
   const connectWithRetry = () => {
     console.log("MongoDB connection with retry");
-    connect(Environments.connectionString, options)
+    connect(Environments.connectionDatabaseString, options)
       .then(() => {
         console.log("MongoDB is connected");
       })

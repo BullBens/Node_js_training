@@ -21,6 +21,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const inversify_1 = require("inversify");
 const mongoose_1 = require("mongoose");
 const user_schema_1 = require("./../schemas/user.schema");
+const ObjectId = mongoose_1.Types.ObjectId;
 exports.UserModel = mongoose_1.model("users", user_schema_1.UserSchema);
 let UserRepository = class UserRepository {
     constructor() { }
@@ -30,15 +31,54 @@ let UserRepository = class UserRepository {
             return newValue;
         });
     }
-    getAll() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let newValue = yield exports.UserModel.find();
-            return newValue;
-        });
-    }
     findById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             let user = yield exports.UserModel.findById(id);
+            return user;
+        });
+    }
+    getFriends(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let userFriends = yield exports.UserModel.aggregate([
+                { $match: { _id: ObjectId(id) } },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "friends",
+                        foreignField: "_id",
+                        as: "friends",
+                    },
+                },
+                {
+                    $project: {
+                        friends: {
+                            _id: 1,
+                            login: 1,
+                            photo: 1,
+                        },
+                    },
+                },
+            ]);
+            return userFriends[0].friends;
+        });
+    }
+    findByInvitationHashCodeAndUpdateFriends(invitationHashCode, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let searchedProfile = yield exports.UserModel.findOneAndUpdate({ invitationHashCode }, {
+                $addToSet: {
+                    friends: ObjectId(id),
+                },
+            });
+            return searchedProfile;
+        });
+    }
+    findByIdAndUpdateFriends(_id, searchedProfileId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let user = yield exports.UserModel.findOneAndUpdate({ _id }, {
+                $addToSet: {
+                    friends: ObjectId(searchedProfileId),
+                },
+            });
             return user;
         });
     }

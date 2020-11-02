@@ -1,6 +1,5 @@
 import { injectable } from "inversify";
 import { model, Types } from "mongoose";
-
 import { EventEntity } from "entities";
 import { EventSchema } from "./../schemas/event.schema";
 

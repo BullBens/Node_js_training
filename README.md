@@ -53,3 +53,12 @@ Send GET request to http://localhost:80/
 The default URL is: _https://localhost:443_
 
 The key and cert in the config folder is for testing purpose only. You should generate your own.
+
+
+## Build project
+
+Run script
+
+```
+npm run build
+```

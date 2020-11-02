@@ -33,7 +33,7 @@ const port = process.env.PORT || httpPort;
     };
     const connectWithRetry = () => {
         console.log("MongoDB connection with retry");
-        mongoose_1.connect(environment_1.Environments.connectionString, options)
+        mongoose_1.connect(environment_1.Environments.connectionDatabaseString, options)
             .then(() => {
             console.log("MongoDB is connected");
         })

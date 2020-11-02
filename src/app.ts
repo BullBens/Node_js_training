@@ -6,7 +6,6 @@ import { ErrorMiddleware } from "./middlewares/error.middleware.ts";
 
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
-import multer from "multer";
 
 class App {
   public app: express.Application;

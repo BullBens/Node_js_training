@@ -5,6 +5,8 @@ import { ApplicationError } from "../common";
 import { HashEncrypter } from "./../common/hash-encrypter";
 import { Environments } from "../environment/environment";
 import { SendEmailService } from "./sendEmail.service";
+import { nanoid } from "nanoid";
+
 var jwt = require("jsonwebtoken");
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(Environments.sendGridApiKey);
@@ -21,60 +23,56 @@ export class AuthService {
     const hashedPassword: string = this._hashEncrypter.getHash(
       registerModel.password
     );
-    try {
-      const existedUser = await this._userRepository.findOne(
-        registerModel.email,
-        hashedPassword
-      );
-      if (existedUser && existedUser.confirmed) {
-        throw new ApplicationError("User already exist!");
-      }
-      // if (existedUser && !existedUser.confirmed) {
-      //   return await this._sendEmailService
-      //     .emailConfirm(
-      //       existedUser._id,
-      //       existedUser.email,
-      //       "andreiafanaskin@gmail.com"
-      //     )
-      //     .then(() => {
-      //       return true;
-      //     })
-      //     .catch(() => {
-      //       return false;
-      //     });
-      // }
-      const userEntity = await this._userRepository.add({
-        login: registerModel.login,
-        email: registerModel.email,
-        password: hashedPassword,
-        type: registerModel.type,
-        photo: null,
-        city: registerModel.city,
-        classification: registerModel.classification,
-        coins: 0,
-        isAdmin: false,
-        confirmed: true,
-      });
-      debugger;
-      if (userEntity) {
-        return true;
-        // return await this._sendEmailService
-        //   .emailConfirm(
-        //     userEntity._id,
-        //     userEntity.email,
-        //     "andreiafanaskin@gmail.com"
-        //   )
-        //   .then(() => {
-        //     return true;
-        //   })
-        //   .catch(() => {
-        //     return false;
-        //   });
-      } else {
-        throw new ApplicationError("Error create user!");
-      }
-    } catch (error) {
-      throw new ApplicationError(error);
+    const existedUser = await this._userRepository.findOne(
+      registerModel.email,
+      hashedPassword
+    );
+    if (existedUser && existedUser.confirmed) {
+      throw new ApplicationError("User already exist!");
+    }
+    if (existedUser && !existedUser.confirmed) {
+      return await this._sendEmailService
+        .emailConfirm(
+          existedUser._id,
+          existedUser.email,
+          "andreiafanaskin@gmail.com"
+        )
+        .then(() => {
+          return true;
+        })
+        .catch(() => {
+          return false;
+        });
+    }
+    const userEntity = await this._userRepository.add({
+      friends: [],
+      login: registerModel.login,
+      email: registerModel.email,
+      password: hashedPassword,
+      type: registerModel.type,
+      photo: null,
+      city: registerModel.city,
+      classification: registerModel.classification,
+      coins: 0,
+      isAdmin: false,
+      confirmed: false,
+      invitationHashCode: nanoid(),
+    });
+    if (userEntity) {
+      return await this._sendEmailService
+        .emailConfirm(
+          userEntity._id,
+          userEntity.email,
+          "andreiafanaskin@gmail.com"
+        )
+        .then(() => {
+          return true;
+        })
+        .catch(() => {
+          return false;
+        });
+    } else {
+      throw new ApplicationError("Error create user!");
     }
   }
 

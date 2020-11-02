@@ -8,6 +8,8 @@ export class UserEntity {
   type: number;
   city: string;
   classification: number;
+  invitationHashCode: string;
+  friends: Array<string>;
   coins: number;
   confirmed: boolean;
   isAdmin: boolean;
