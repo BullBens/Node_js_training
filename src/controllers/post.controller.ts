@@ -53,7 +53,7 @@ export class PostController implements Controller {
     const prefix = "post";
 
     handlers.push({
-      route: `/${prefix}`,
+      route: `/${prefix}/create`,
       handlers: [AuthMiddleware, <any>this.create],
       type: "POST",
     });

@@ -57,7 +57,7 @@ let PostController = class PostController {
         const handlers = [];
         const prefix = "post";
         handlers.push({
-            route: `/${prefix}`,
+            route: `/${prefix}/create`,
             handlers: [auth_middleware_1.AuthMiddleware, this.create],
             type: "POST",
         });
